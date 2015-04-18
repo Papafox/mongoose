@@ -16,8 +16,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <libgen.h>
 
 #include "mongoose.h"
+#include "pidfile.h"
 
 static int running;
 
@@ -120,13 +122,13 @@ static void intHandler(int dummy) {
     running = 0;
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
+    char pidFile[255];
     char* user = "nobody";
     time_t start, finish;
 
     // Open the log
     openlog(NULL, LOG_CONS | LOG_PID, LOG_DAEMON);
-    syslog(LOG_NOTICE, "Daemon starting");
 
     // Get the start time
     time(&start);
@@ -134,12 +136,19 @@ int main(void) {
     // Demonize the server
     daemonMode();
 
+    // Use a pid file to ensure a singleton process
+    strcpy(pidFile, "/var/run/");
+    strcat(pidFile, basename(argv[0]));
+    strcat(pidFile, ".pid");
+    createPidFile(argv[0], pidFile, 0);
+
     // Trap KILL's - cause 'running' flag to be set false
     running = 1;
     signal(SIGINT, intHandler);
     signal(SIGTERM, intHandler);
 
     // Create and configure the server
+    syslog(LOG_NOTICE, "Daemon starting");
     struct mg_server* server = mg_create_server(NULL, event_handler);
     mg_set_option(server, "listening_port", "8000");
     syslog(LOG_INFO, "Switching server to run as user %s", user);
