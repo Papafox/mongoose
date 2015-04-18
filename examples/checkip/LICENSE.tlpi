@@ -1,9 +1,0 @@
-Files:	pidfile.c
-
-The code is this file is based on the 'filelock' example  published in The Linux Programming Interface by Michael Kerrick, 2010
-See http://man7.org/tlpi/code/download/tlpi-150325-dist.tar.gz for the complete source code
-
-License:
-
-The source code file is copyright 2010, Michael Kerrisk, and is licensed under the GNU Lesser General Public License, version 3.  See the file COPYING.lgpl-v3 for the complete license.
-
