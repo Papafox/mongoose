@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
     strcpy(pidFile, "/var/run/");
     strcat(pidFile, basename(argv[0]));
     strcat(pidFile, ".pid");
-    createPidFile(argv[0], pidFile, 0);
+    int pid_fd = createPidFile(argv[0], pidFile, 0);
 
     // Trap KILL's - cause 'running' flag to be set false
     running = 1;
@@ -171,6 +171,7 @@ int main(int argc, char* argv[]) {
 
     // Cleanup, and free server instance
     mg_destroy_server(&server);
+    close(pid_fd);
     syslog(LOG_NOTICE, "Daemon stopping after %lu:%02lu:%02lu", hours, mins, secs);
 
     return 0;
