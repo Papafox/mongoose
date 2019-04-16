@@ -5112,7 +5112,7 @@ void mg_copy_listeners(struct mg_server *s, struct mg_server *to) {
 #if defined(NS_ENABLE_SSL) && defined(HEADER_SSL_H)
       /* OpenSSL only. See https://github.com/cesanta/mongoose/issues/441 */
       if (tmp->ssl_ctx != NULL) {
-        tmp->ssl_ctx->references++;
+        SSL_CTX_up_ref(tmp->ssl_ctx);
       }
 #endif
 
